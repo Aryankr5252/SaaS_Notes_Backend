@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator"
-import userModel from "../models/userModel";
+import userModel from "../models/userModel.js";
 
 
 
@@ -11,11 +11,12 @@ export const registerUser = async (req, res)=> {
 
     let {userName, email, password, role} = req.body;
 
-    let existingUser = userModel.findOne({email});
-    if(existingUser){
-        return res.status(400).json({message: "User already exists"});
-    }
-    const hashedPassword = await userModel.hashedPassword(password);
+    // let existingUser = userModel.findOne({email});
+    // console.log(existingUser)
+    // if(existingUser){
+    //     return res.status(400).json({message: "User already exists"});
+    // }
+    const hashedPassword = await userModel.hashPassword(password);
 
     const user = await userModel.create({
         userName,
