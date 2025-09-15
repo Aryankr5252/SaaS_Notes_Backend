@@ -27,3 +27,19 @@ export const authUser = async (req, res, next) => {
       })
     }
 }
+
+export const adminOnly = (req, res, next) => {
+    try{
+        if(req.user.role !== "Admin"){
+        return res.status(403).json({
+            success: false,
+            message: "Admin access only."
+          })
+    }
+    }catch(err){
+        return res.status(403).json({
+        success: false,
+        message: "Admin access only."
+      })
+    }
+}

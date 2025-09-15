@@ -5,6 +5,8 @@ import { dbConnect } from "./config/dbConnect.js";
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRouter.js"
+import noteRouter from "./routes/noteRouter.js"
+import tenantRouter from "./routes/tenantRouter.js"
 
 const app = express();
 app.use(express.json());
@@ -17,6 +19,8 @@ dbConnect();
 
 //routes defined
 app.use('/api/users', userRouter);
+app.use('/api/notes', noteRouter);
+app.use('/api/tenants', tenantRouter);
 app.get('/', (req, res)=> {
     res.send("API is running...")
 })

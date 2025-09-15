@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator"
 import userModel from "../models/userModel.js";
+import tenantModel from "../models/tenantModel.js";
 
 
 
@@ -9,23 +10,31 @@ export const registerUser = async (req, res)=> {
         return res.status(400).json({errors: errors.array()});
     }
 
-    let {userName, email, password, role} = req.body;
+    let {userName, email, password, role, slug} = req.body;
 
-    // let existingUser = userModel.findOne({email});
-    // console.log(existingUser)
-    // if(existingUser){
-    //     return res.status(400).json({message: "User already exists"});
-    // }
+    let existingUser = await userModel.findOne({email});
+    console.log(existingUser)
+    if(existingUser){
+        return res.status(400).json({message: "User already exists"});
+    }
+
+    const tenant = await tenantModel.findOne({ slug});
+    if (!tenant) {
+      return res.status(404).json({ message: "Tenant not found" });
+    }
+
     const hashedPassword = await userModel.hashPassword(password);
 
     const user = await userModel.create({
         userName,
         email,
         password: hashedPassword,
-        role
+        role,
+        slug,
+        tenantId: tenant._id
     });
     await user.save();
-    const token = user.generateAuthToken();
+    const token = user.generateAuthToken(user._id, tenant._id, user.role);
     res.cookie("token", token);
 
     res.status(201).json({user, token});

@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema(
       enum: ["Admin", "Member"],
       default: "Member",
     },
+    slug: {
+      type: String,
+      required: true,
+      unique: true, 
+      lowercase: true,
+    },
     tenantId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tenant",
@@ -32,8 +38,13 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.methods.generateAuthToken = function() {
-  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {expiresIn: '24h'});
+userSchema.methods.generateAuthToken = function(userId, tenantId, role) {
+  return jwt.sign({
+      userId: this._id,
+      tenantId: this.tenantId,
+      role: this.role,
+    },
+    process.env.JWT_SECRET, {expiresIn: '24h'});
 };
 
 userSchema.methods.comparePassword = async function(password) {

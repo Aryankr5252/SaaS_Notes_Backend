@@ -1,31 +1,41 @@
-import noteModel from "../models/noteModel";
+import noteModel from "../models/noteModel.js";
+import tenantModel from "../models/tenantModel.js";
 
 
 
-export const createNotes = async (req, res) => {
-    let { title, content } = req.body;
-    const tenantId = req.user.tenantId;
-    const createdBy = req.user._id;
+export const createNote = async (req, res) => {
+  try {
+    const { title, content } = req.body;
 
-    if (!title || !content || !tenantId || !createdBy) {
-        return res.status(400).json({ message: "All fields are required" });
+    
+    const tenant = await tenantModel.findById(req.user.tenantId);
+    if (!tenant) {
+      return res.status(404).json({ message: "Tenant not found" });
     }
-    try {
-        const note = await noteModel.create({
-            title,
-            content,
-            tenantId,
-            createdBy
+
+    
+    if (tenant.plan === "free") {
+      const count = await noteModel.countDocuments({ tenantId: tenant._id });
+      if (count >= tenant.noteLimit) {
+        return res.status(403).json({
+          message: "Note limit reached. Please upgrade to Pro."
         });
-        await note.save();
-        res.status(201).json({
-            note
-        })
-    } catch (error) {
-        console.error("Error inserting todo:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+      }
     }
-}
+
+    const note = await Note.create({
+      title,
+      content,
+      tenantId: tenant._id,
+      createdBy: req.user.userId
+    });
+
+    res.status(201).json(note);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 export const getNotes = async (req, res) => {
     const tenantId = req.user.tenantId;
