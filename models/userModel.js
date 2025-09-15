@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       lowercase: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -26,7 +27,6 @@ const userSchema = new mongoose.Schema(
     slug: {
       type: String,
       required: true,
-      unique: true, 
       lowercase: true,
     },
     tenantId: {

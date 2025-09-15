@@ -30,7 +30,7 @@ export const createNote = async (req, res) => {
       createdBy: req.user._id
     });
 
-    res.status(201).json(note);
+    res.status(201).json({note});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
