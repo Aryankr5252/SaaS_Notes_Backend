@@ -14,6 +14,8 @@ export const registerTenant = async (req, res) => {
             slug
             
         })
+        await tenant.save();
+        res.status(201).json({tenant, message: "Tenant registered successfully"});
     }catch(error){
         console.error("Error registering tenant:", error);
         res.status(500).json({ message: "Internal Server Error" });

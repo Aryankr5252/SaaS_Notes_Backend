@@ -23,11 +23,11 @@ export const createNote = async (req, res) => {
       }
     }
 
-    const note = await Note.create({
+    const note = await noteModel.create({
       title,
       content,
       tenantId: tenant._id,
-      createdBy: req.user.userId
+      createdBy: req.user._id
     });
 
     res.status(201).json(note);
@@ -48,10 +48,10 @@ export const getNotes = async (req, res) => {
     }
 }
 
-export const getOneNote = async (req, res) => {
+export const getMyNotes = async (req, res) => {
     const createdBy = req.params.id;
     try {
-        const note = await noteModel.findById(createdBy).populate('createdBy', 'userName email');
+        const note = await noteModel.find({createdBy: req.user.id, tenantId: req.user.tenantId }).populate('createdBy', 'userName email');
         if(!note) {
             return res.status(404).json({message: "Note not found"});
         }
@@ -66,7 +66,7 @@ export const updateNote = async (req, res) =>{
     const noteId = req.params.id;
     const {title, content} = req.body;
     try{
-        
+        console.log(noteId)
         const updateNote = await noteModel.findByIdAndUpdate(noteId, {title, content}, {new: true});
         res.status(200).json({updateNote});
     }catch(error){

@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRouter.js"
 import noteRouter from "./routes/noteRouter.js"
 import tenantRouter from "./routes/tenantRouter.js"
+import healthRouter from "./routes/healthRouter.js"
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ dbConnect();
 app.use('/api/users', userRouter);
 app.use('/api/notes', noteRouter);
 app.use('/api/tenants', tenantRouter);
+app.use('/api/health', healthRouter)
 app.get('/', (req, res)=> {
     res.send("API is running...")
 })
