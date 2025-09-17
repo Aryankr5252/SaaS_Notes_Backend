@@ -17,7 +17,8 @@ app.use(cors({
   origin: [
     "http://localhost:5173", 
     "https://your-frontend.vercel.app",
-    "https://saa-s-frontend-zeta.vercel.app"
+    "https://saa-s-frontend-zeta.vercel.app",
+    "https://saa-s-frontend-4i2v.vercel.app"
   ],  
   credentials: true                  
 }));
