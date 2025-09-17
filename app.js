@@ -16,7 +16,8 @@ app.use(cookieParser());
 app.use(cors({
   origin: [
     "http://localhost:5173", 
-    "https://your-frontend.vercel.app"
+    "https://your-frontend.vercel.app",
+    "https://saa-s-frontend-zeta.vercel.app"
   ],  
   credentials: true                  
 }));
